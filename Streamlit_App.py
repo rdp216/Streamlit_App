@@ -1,7 +1,7 @@
 import numpy as np
 import streamlit as st
 import requests
-import seaborn as sns
+# import seaborn as sns
 import pandas as pd
 from bs4 import BeautifulSoup
 from matplotlib import pyplot as plt
@@ -48,24 +48,34 @@ def Sales_Profit_Table(soup):
     st.title("Sales and Profit Comparison")
     st.dataframe(df,width=900)
     # Create a row container to display the bar charts side-by-side
-    col1, col2 = st.columns(2)
+    # col1, col2, col3 = st.columns(3)
 
-    # Create bar chart for Sales on the left column
-    with col1:
-        fig, ax = plt.subplots()
-        st.subheader("Sales")
-        sns.barplot(data=df1, x=df1.Sales, y=df1.index)
-        plt.ylabel('Time Period')  # Set y-axis label (within Streamlit, use plt.ylabel)
-        st.pyplot(fig)  # Display the chart in Streamlit
+    fig, (ax0, ax1) = plt.subplots(1, 2, figsize=(22,8))  # Adjust figure size
 
-    # Create bar chart for Profit on the right column
-    with col2:
-        fig,ax = plt.subplots()
-        st.subheader("Profit")
-        sns.barplot(data=df1, x=df1.Profit, y=df1.index)
-        plt.ylabel('Time Period')  # Set y-axis label
+    # Plot Sales Data in the first subplot (ax1)
+    bars1 = ax0.barh(index, lsSales, color='skyblue', label='Sales')
+    ax0.set_xlabel('Value')
+    ax0.set_ylabel('Year')
+    ax0.set_title('Sales Performance')
+    ax0.legend()
+    # st.pyplot(fig)
+    # with col2:
+        # Plot Profit Data in the second subplot (ax2)
+    bars2 = ax1.barh(index, lsProfit, color='gold', label='Profit')  # Different color for clarity
+    ax1.set_xlabel('Value')
+    ax1.set_ylabel('Year')
+    ax1.set_title('Profit Performance')
+    ax1.legend()
+    ax1.legend(fontsize=14)
+    ax0.tick_params(axis='both', which='major', labelsize=14)
+    ax1.tick_params(axis='both', which='major', labelsize=14)
+    # In your Streamlit layout
+    with st.container():
         st.pyplot(fig)
+        st.write('<style>.element { width: 200px; }</style>', unsafe_allow_html=True)
 
+    # Adjust layout (optional)
+    plt.tight_layout()
 
 
 def roceMedian(soup):
